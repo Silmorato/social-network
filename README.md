@@ -27,7 +27,7 @@ La estructura está organizada en capas siguiendo los principios de Clean Archit
 
 ### 🖼️ Diagrama de arquitectura
 
-![Diagrama de Arquitectura](./docs/images/architecture-diagram.png)]
+![Diagrama de Arquitectura](./docs/images/architecture-diagram.png)
 
 ## 📬 Endpoints principales
 
