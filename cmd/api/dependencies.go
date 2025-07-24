@@ -1,6 +1,7 @@
 package api
 
 import (
+	"gorm.io/gorm"
 	"net/http"
 	"twitter-clone/internal/adapters/database"
 	httpAdap "twitter-clone/internal/adapters/http"
@@ -8,10 +9,7 @@ import (
 )
 
 // BuildApp sets up all application dependencies and returns the configured HTTP handler.
-func BuildApp() http.Handler {
-	// PostgreSQL connection
-	db := database.InitPostgresDB()
-
+func BuildApp(db *gorm.DB) http.Handler {
 	// Repositories (Postgres version)
 	tweetRepo := database.NewTweetRepository(db)
 	followRepo := database.NewFollowRepository(db)

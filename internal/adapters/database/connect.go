@@ -2,44 +2,34 @@ package database
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"time"
-
+	"github.com/magiconair/properties"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 )
 
-func InitPostgresDB() *gorm.DB {
+func InitDB() (*gorm.DB, error) {
+	p, err := properties.LoadFile("config/local.properties", properties.UTF8)
+	if err != nil {
+		log.Fatalf("failed to load config: %v", err)
+	}
+
+	host := p.GetString("DB_HOST", "")
+	port := p.GetString("DB_PORT", "")
+	user := p.GetString("DB_USER", "")
+	password := p.GetString("DB_PASSWORD", "")
+	dbName := p.GetString("DB_NAME", "")
+
 	dsn := fmt.Sprintf(
-		"host=localhost user=%s password=%s dbname=%s port=5432 sslmode=disable TimeZone=America/Argentina/Buenos_Aires",
-		getEnv("DB_USER", "postgres"),
-		getEnv("DB_PASSWORD", "rootroot"),
-		getEnv("DB_NAME", "silvinamorato"),
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		host, user, password, dbName, port,
 	)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("failed to connect to DB: %v", err)
+		return nil, fmt.Errorf("failed to connect to DB: %w", err)
 	}
 
-	sqlDB, err := db.DB()
-	if err != nil {
-		log.Fatalf("failed to get DB instance: %v", err)
-	}
-
-	// Optional: tuning
-	sqlDB.SetMaxOpenConns(10)
-	sqlDB.SetMaxIdleConns(5)
-	sqlDB.SetConnMaxLifetime(time.Hour)
-
-	log.Println("✅ Connected to Postgres!")
-	return db
-}
-
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
+	log.Println("database connected successfully")
+	return db, nil
 }
