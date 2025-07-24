@@ -1,11 +1,11 @@
 -- Users table (optional if you don't manage user entities)
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE IF NOT EXISTS users (
                                      id TEXT PRIMARY KEY,
                                      name TEXT
 );
 
 -- Tweets table
-CREATE TABLE IF NOT EXISTS tweet (
+CREATE TABLE IF NOT EXISTS tweets (
                                       id UUID PRIMARY KEY,
                                       user_id TEXT NOT NULL,
                                       content TEXT NOT NULL,

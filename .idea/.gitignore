@@ -1,2 +1,2 @@
 # Configuración local
-config/local.properties
+config/*.properties

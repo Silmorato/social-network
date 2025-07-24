@@ -9,7 +9,7 @@ import (
 )
 
 func InitDB() (*gorm.DB, error) {
-	p, err := properties.LoadFile("config/local.properties", properties.UTF8)
+	p, err := properties.LoadFile("config/render.properties", properties.UTF8)
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
@@ -20,9 +20,11 @@ func InitDB() (*gorm.DB, error) {
 	password := p.GetString("DB_PASSWORD", "")
 	dbName := p.GetString("DB_NAME", "")
 
+	sslmode := p.GetString("DB_SSLMODE", "disable")
+
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		host, user, password, dbName, port,
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		host, user, password, dbName, port, sslmode,
 	)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
