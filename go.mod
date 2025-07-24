@@ -6,6 +6,7 @@ require (
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
+	github.com/magiconair/properties v1.8.10
 	github.com/stretchr/testify v1.10.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.30.0
