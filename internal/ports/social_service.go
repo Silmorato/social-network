@@ -1,12 +1,12 @@
 package ports
 
 import (
-	"twitter-clone/internal/domain"
+	"twitter-clone/internal/adapters/database/model"
 	customerr "twitter-clone/internal/errors"
 )
 
 type SocialService interface {
-	PublishTweet(userID, content string) (*domain.Tweet, *customerr.APIError)
-	GetTimeline(userID string) ([]*domain.Tweet, *customerr.APIError)
+	PublishTweet(userID, content string) (*model.Tweet, *customerr.APIError)
+	GetTimeline(userID string) ([]*model.Tweet, *customerr.APIError)
 	FollowUser(followerID, followingID string) (*string, *customerr.APIError)
 }

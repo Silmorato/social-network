@@ -2,7 +2,7 @@ package database
 
 import (
 	"gorm.io/gorm"
-	"twitter-clone/internal/domain"
+	"twitter-clone/internal/adapters/database/model"
 )
 
 type FollowRepository struct {
@@ -15,7 +15,7 @@ func NewFollowRepository(db *gorm.DB) *FollowRepository {
 
 // Save a follow relationship in the database
 func (r *FollowRepository) AddFollow(followerID, followingID string) error {
-	follow := &domain.Follow{
+	follow := &model.Follow{
 		FollowerID:  followerID,
 		FollowingID: followingID,
 	}
@@ -26,7 +26,7 @@ func (r *FollowRepository) AddFollow(followerID, followingID string) error {
 func (r *FollowRepository) GetFollowings(userID string) ([]string, error) {
 	var followings []string
 	err := r.db.
-		Model(&domain.Follow{}).
+		Model(&model.Follow{}).
 		Where("follower_id = ?", userID).
 		Pluck("following_id", &followings).Error
 
@@ -36,7 +36,7 @@ func (r *FollowRepository) GetFollowings(userID string) ([]string, error) {
 func (r *FollowRepository) IsFollowing(followerID, followingID string) bool {
 	var count int64
 	err := r.db.
-		Model(&domain.Follow{}).
+		Model(&model.Follow{}).
 		Where("follower_id = ? AND following_id = ?", followerID, followingID).
 		Count(&count).Error
 	return err == nil && count > 0

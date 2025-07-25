@@ -1,26 +1,25 @@
 package services
 
 import (
-	"twitter-clone/internal/domain"
-	customerr "twitter-clone/internal/errors"
-
 	"github.com/stretchr/testify/mock"
+	"twitter-clone/internal/adapters/database/model"
+	customerr "twitter-clone/internal/errors"
 )
 
 type SocialServiceMock struct {
 	mock.Mock
 }
 
-func (m *SocialServiceMock) PublishTweet(userID, content string) (*domain.Tweet, *customerr.APIError) {
+func (m *SocialServiceMock) PublishTweet(userID, content string) (*model.Tweet, *customerr.APIError) {
 	args := m.Called(userID, content)
-	tweet, _ := args.Get(0).(*domain.Tweet)
+	tweet, _ := args.Get(0).(*model.Tweet)
 	err, _ := args.Get(1).(*customerr.APIError)
 	return tweet, err
 }
 
-func (m *SocialServiceMock) GetTimeline(userID string) ([]*domain.Tweet, *customerr.APIError) {
+func (m *SocialServiceMock) GetTimeline(userID string) ([]*model.Tweet, *customerr.APIError) {
 	args := m.Called(userID)
-	tweets, _ := args.Get(0).([]*domain.Tweet)
+	tweets, _ := args.Get(0).([]*model.Tweet)
 	err, _ := args.Get(1).(*customerr.APIError)
 	return tweets, err
 }

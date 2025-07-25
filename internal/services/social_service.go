@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sort"
 	"time"
-	"twitter-clone/internal/domain"
+	"twitter-clone/internal/adapters/database/model"
 	customErr "twitter-clone/internal/errors"
 	"twitter-clone/internal/ports"
 )
@@ -25,12 +25,12 @@ func NewSocialService(tweetRepo ports.TweetRepository, followRepo ports.FollowRe
 	}
 }
 
-func (s *SocialService) PublishTweet(userID, content string) (*domain.Tweet, *customErr.APIError) {
+func (s *SocialService) PublishTweet(userID, content string) (*model.Tweet, *customErr.APIError) {
 	if !s.userRepository.Exists(userID) {
 		return nil, customErr.NewAPIError(http.StatusBadRequest, customErr.ErrUserNotFound, nil)
 	}
 
-	tweet := &domain.Tweet{
+	tweet := &model.Tweet{
 		ID:        uuid.New(),
 		UserID:    userID,
 		Content:   content,
@@ -44,7 +44,7 @@ func (s *SocialService) PublishTweet(userID, content string) (*domain.Tweet, *cu
 	return tweet, nil
 }
 
-func (s *SocialService) GetTimeline(userID string) ([]*domain.Tweet, *customErr.APIError) {
+func (s *SocialService) GetTimeline(userID string) ([]*model.Tweet, *customErr.APIError) {
 	userIDs, err := s.followRepository.GetFollowings(userID)
 	if err != nil {
 		return nil, customErr.NewAPIError(http.StatusInternalServerError, "could not get followings", err)
@@ -81,7 +81,7 @@ func (s *SocialService) FollowUser(followerID, followingID string) (*string, *cu
 	return &success, nil
 }
 
-func sortTweetsByDateDesc(tweets []*domain.Tweet) []*domain.Tweet {
+func sortTweetsByDateDesc(tweets []*model.Tweet) []*model.Tweet {
 	sort.Slice(tweets, func(i, j int) bool {
 		return tweets[i].CreatedAt.After(tweets[j].CreatedAt)
 	})

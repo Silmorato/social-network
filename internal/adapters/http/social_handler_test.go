@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 	"time"
-	"twitter-clone/internal/domain"
+	"twitter-clone/internal/adapters/database/model"
 	customerr "twitter-clone/internal/errors"
 	"twitter-clone/internal/services"
 )
@@ -16,13 +16,13 @@ import (
 func TestCreateTweetHandler_Valid(t *testing.T) {
 	mockService := new(services.SocialServiceMock)
 
-	handler := &SocialHandler{Service: mockService}
+	handler := &SocialNetworkHandler{Service: mockService}
 
 	body := `{"user_id": "user123", "content": "¡Hello!"}`
 	req := httptest.NewRequest(http.MethodPost, "/tweets", strings.NewReader(body))
 	w := httptest.NewRecorder()
 
-	expectedTweet := &domain.Tweet{
+	expectedTweet := &model.Tweet{
 		ID:        uuid.New(),
 		UserID:    "user123",
 		Content:   "¡Hello!",
@@ -72,7 +72,7 @@ func TestCreateTweetHandler_InvalidCases(t *testing.T) {
 			mockService := new(services.SocialServiceMock)
 			tt.mockSetup(mockService)
 
-			handler := &SocialHandler{Service: mockService}
+			handler := &SocialNetworkHandler{Service: mockService}
 			req := httptest.NewRequest(http.MethodPost, "/tweets", strings.NewReader(tt.body))
 			w := httptest.NewRecorder()
 
@@ -87,7 +87,7 @@ func TestCreateTweetHandler_InvalidCases(t *testing.T) {
 
 func TestGetTimelineHandler_Valid(t *testing.T) {
 	userID := "user123"
-	tweets := []*domain.Tweet{
+	tweets := []*model.Tweet{
 		{
 			ID:        uuid.New(),
 			UserID:    userID,
@@ -105,7 +105,7 @@ func TestGetTimelineHandler_Valid(t *testing.T) {
 	mockService := new(services.SocialServiceMock)
 	mockService.On("GetTimeline", userID).Return(tweets, nil)
 
-	handler := &SocialHandler{Service: mockService}
+	handler := &SocialNetworkHandler{Service: mockService}
 
 	req := httptest.NewRequest(http.MethodGet, "/timeline", nil)
 	req.Header.Set("X-User-ID", userID)
@@ -147,7 +147,7 @@ func TestGetTimelineHandler_InvalidCases(t *testing.T) {
 			mockService := new(services.SocialServiceMock)
 			tt.mockSetup(mockService)
 
-			handler := &SocialHandler{Service: mockService}
+			handler := &SocialNetworkHandler{Service: mockService}
 			req := httptest.NewRequest(http.MethodGet, "/timeline", nil)
 
 			if tt.headerValue != "" {

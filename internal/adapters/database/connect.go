@@ -6,10 +6,13 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"os"
 )
 
 func InitDB() (*gorm.DB, error) {
-	p, err := properties.LoadFile("config/render.properties", properties.UTF8)
+	configPath := getConfigPath()
+
+	p, err := properties.LoadFile(configPath, properties.UTF8)
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
@@ -34,4 +37,15 @@ func InitDB() (*gorm.DB, error) {
 
 	log.Println("database connected successfully")
 	return db, nil
+}
+
+func getConfigPath() string {
+	env := os.Getenv("SCOPE")
+
+	switch env {
+	case "local":
+		return "config/local.properties"
+	default:
+		return "config/render.properties"
+	}
 }

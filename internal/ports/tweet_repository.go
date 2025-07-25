@@ -1,10 +1,10 @@
 package ports
 
 import (
-	"twitter-clone/internal/domain"
+	"twitter-clone/internal/adapters/database/model"
 )
 
 type TweetRepository interface {
-	Save(tweet *domain.Tweet) error
-	GetAllByUserIDs(userIDs []string) ([]*domain.Tweet, error)
+	Save(tweet *model.Tweet) error
+	GetAllByUserIDs(userIDs []string) ([]*model.Tweet, error)
 }

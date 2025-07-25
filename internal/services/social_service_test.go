@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 	"twitter-clone/internal/adapters/database"
-	"twitter-clone/internal/domain"
+	"twitter-clone/internal/adapters/database/model"
 	customerr "twitter-clone/internal/errors"
 )
 
@@ -94,7 +94,7 @@ func TestGetTimeline_Valid(t *testing.T) {
 	mockTweetRepo := new(database.TweetRepositoryMock)
 	mockFollowRepo := new(database.FollowRepositoryMock)
 
-	expectedTweet := &domain.Tweet{
+	expectedTweet := &model.Tweet{
 		ID:        uuid.New(),
 		UserID:    "user234",
 		Content:   "Hello, this is a test tweet",
@@ -103,7 +103,7 @@ func TestGetTimeline_Valid(t *testing.T) {
 
 	mockFollowRepo.On("GetFollowings", userID).Return(followings, nil)
 
-	mockTweetRepo.On("GetAllByUserIDs", expectedUserIDs).Return([]*domain.Tweet{expectedTweet}, nil)
+	mockTweetRepo.On("GetAllByUserIDs", expectedUserIDs).Return([]*model.Tweet{expectedTweet}, nil)
 
 	service := NewSocialService(mockTweetRepo, mockFollowRepo, nil)
 	tweets, err := service.GetTimeline(userID)
@@ -124,7 +124,7 @@ func TestGetTimeline_InvalidCases(t *testing.T) {
 		mockFollowError error
 		mockTweetError  error
 		mockFollowings  []string
-		mockTweets      []*domain.Tweet
+		mockTweets      []*model.Tweet
 		expectedStatus  int
 		expectedMessage string
 	}{
@@ -144,7 +144,7 @@ func TestGetTimeline_InvalidCases(t *testing.T) {
 		{
 			name:            "no tweets available",
 			mockFollowings:  []string{"234"},
-			mockTweets:      []*domain.Tweet{},
+			mockTweets:      []*model.Tweet{},
 			expectedStatus:  http.StatusNotFound,
 			expectedMessage: "no tweets available",
 		},

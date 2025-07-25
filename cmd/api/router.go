@@ -6,7 +6,7 @@ import (
 	httpAdap "twitter-clone/internal/adapters/http"
 )
 
-func NewRouter(socialHandler *httpAdap.SocialHandler) http.Handler {
+func NewRouter(socialHandler httpAdap.SocialHandler) http.Handler {
 	router := mux.NewRouter()
 
 	// POST /tweets → create tweet
